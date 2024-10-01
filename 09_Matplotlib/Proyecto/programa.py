@@ -7,7 +7,6 @@ Consulta de temperaturas interactiva
 import os
 import time
 
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -38,21 +37,72 @@ def obtener_ciudades(df: pd.DataFrame) -> list[str]:
     return ciudades
 
 
+def obtener_nombre_mes(mes: str) -> str:
+    meses = {
+        '1': 'Enero',
+        '2': 'Febrero',
+        '3': 'Marzo',
+        '4': 'Abril',
+        '5': 'Mayo',
+        '6': 'Junio',
+        '7': 'Julio',
+        '8': 'Agosto',
+        '9': 'Septiembre',
+        '10': 'Octubre',
+        '11': 'Noviembre',
+        '12': 'Diciembre'
+    }
+    return meses[mes]
+
+
 def procesar_datos(df: pd.DataFrame, ciudad: str, mes: str) -> tuple:
     nombre_ciudad = df['Ciudad'].iloc[int(ciudad) - 1]
     df = df[df['Ciudad'] == nombre_ciudad][df['Fecha'].dt.month == int(mes)]
+    nombre_mes: str = obtener_nombre_mes(mes)
     minimas = df['Temperatura Minima'].tolist()
     maximas = df['Temperatura Maxima'].tolist()
-    return nombre_ciudad, minimas, maximas
+    return nombre_ciudad, nombre_mes, minimas, maximas
 
 
 def mostrar_grafico(
         ciudad: str,
+        mes: str,
         minimas: list[float],
         maximas: list[float]
         ) -> None:
-    plt.plot(minimas, 'b', label='Minimas')
-    plt.title('Distribución de frutas en el almacén')
+    """
+    Muestra un gráfico de temperaturas mínimas y máximas para una ciudad
+    y mes específicos.
+
+    Parámetros:
+        ciudad (str): Nombre de la ciudad para la que se mostrará el
+            gráfico.
+        mes (str): Mes para el que se mostrará el gráfico.
+        minimas (list[float]): Lista de temperaturas mínimas para el mes
+            y ciudad seleccionados.
+        maximas (list[float]): Lista de temperaturas máximas para el mes
+            y ciudad seleccionados.
+
+    Retorna:
+        None
+    """
+    dias: list[int] = list(range(1, len(minimas) + 1))
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.plot(dias, minimas, label='Minimas', marker='o')
+    ax.plot(dias, maximas, label='Maximas', marker='o')
+    ax.set_xticks(dias)
+    ax.set_xlabel('Día')
+    ax.set_ylabel('Temperatura (°C)')
+    ax.legend()
+
+    plt.title(
+        f'Temperaturas mínimas y máximas para el mes de {mes} en {ciudad}',
+        fontsize=16,
+        fontweight='bold',
+        pad=20
+    )
+    plt.grid()
     plt.show()
 
 
@@ -130,8 +180,8 @@ def correr_programa() -> None:
                 mostrar_error('La opción ingresada no es válida')
             if mes >= '1' and mes <= '12':
                 # 4.
-                ciudad, minimas, maximas = procesar_datos(df, ciudad, mes)
-                mostrar_grafico(ciudad, minimas, maximas)
+                ciudad, mes, minimas, maximas = procesar_datos(df, ciudad, mes)
+                mostrar_grafico(ciudad, mes, minimas, maximas)
                 continuar()
 
 
