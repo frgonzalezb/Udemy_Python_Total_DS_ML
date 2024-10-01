@@ -110,7 +110,7 @@ def mostrar_grafico(
 
 
 def pedir_mes() -> str:
-    return input('\nIntroduce un mes (1 - 12): ')
+    return input('\nIndique un mes (1 - 12) o digite 0 para salir: ')
 
 
 def pedir_ciudad() -> str:
@@ -183,6 +183,8 @@ def correr_programa() -> None:
             continue
 
         mes: str = pedir_mes()
+        if mes == '0':
+            salir()
         if not validar_opcion(mes, (1, 12)):
             mostrar_error('La opción ingresada no es válida')
             continue
