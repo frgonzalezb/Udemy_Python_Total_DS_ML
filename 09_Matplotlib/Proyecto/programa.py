@@ -19,8 +19,11 @@ def cargar_dataframe(ruta: str) -> pd.DataFrame:
     return pd.read_csv(ruta)
 
 
-def mostrar_titulo() -> None:
-    print('### CONSULTA DE TEMPERATURAS INTERACTIVO ###\n')
+def mostrar_menu(df: pd.DataFrame) -> None:
+    print('### CONSULTA DE TEMPERATURAS INTERACTIVO ###\n\n')
+    ciudades: list[str] = obtener_ciudades(df)
+    for i, ciudad in enumerate(ciudades):
+        print(f'{i+1}. {ciudad}')
 
 
 def continuar() -> None:
@@ -110,11 +113,7 @@ def pedir_mes() -> str:
     return input('\nIntroduce un mes (1 - 12): ')
 
 
-def pedir_ciudad(df: pd.DataFrame) -> str:
-    ciudades: list[str] = obtener_ciudades(df)
-    for i, ciudad in enumerate(ciudades):
-        print(f'{i+1}. {ciudad}')
-
+def pedir_ciudad() -> str:
     return input('\nSeleccione una ciudad (1 - 5) o digite 0 para salir: ')
 
 
@@ -127,6 +126,10 @@ def validar_opcion(opcion: str, rango: tuple[int, int]) -> bool:
         return False
 
     return True
+
+
+def preguntar_continuar() -> bool:
+    return input('¿Desea realizar otra consulta? (s/n): ').lower() == 's'
 
 
 def salir() -> None:
@@ -167,22 +170,34 @@ def correr_programa() -> None:
     # 3.
     while True:
         limpiar_consola()
-        mostrar_titulo()
+        mostrar_menu(df)
 
-        ciudad: str = pedir_ciudad(df)
+        ciudad: str = pedir_ciudad()
         if ciudad == '0':
             salir()
         if not validar_opcion(ciudad, (1, 5)):
             mostrar_error('La opción ingresada no es válida')
-        if ciudad >= '1' and ciudad <= '5':
-            mes: str = pedir_mes()
-            if not validar_opcion(mes, (1, 12)):
-                mostrar_error('La opción ingresada no es válida')
-            if mes >= '1' and mes <= '12':
-                # 4.
-                ciudad, mes, minimas, maximas = procesar_datos(df, ciudad, mes)
-                mostrar_grafico(ciudad, mes, minimas, maximas)
-                continuar()
+            continue
+        if ciudad < '1' and ciudad > '5':
+            mostrar_error('La opción ingresada está fuera de rango')
+            continue
+
+        mes: str = pedir_mes()
+        if not validar_opcion(mes, (1, 12)):
+            mostrar_error('La opción ingresada no es válida')
+            continue
+        if mes < '1' and mes > '12':
+            mostrar_error('La opción ingresada está fuera de rango')
+            continue
+
+        # 4.
+        ciudad, mes, minimas, maximas = procesar_datos(df, ciudad, mes)
+        mostrar_grafico(ciudad, mes, minimas, maximas)
+
+        # 5.
+        limpiar_consola()
+        if not preguntar_continuar():
+            salir()
 
 
 if __name__ == '__main__':
