@@ -38,6 +38,24 @@ def obtener_ciudades(df: pd.DataFrame) -> list[str]:
     return ciudades
 
 
+def procesar_datos(df: pd.DataFrame, ciudad: str, mes: str) -> tuple:
+    nombre_ciudad = df['Ciudad'].iloc[int(ciudad) - 1]
+    df = df[df['Ciudad'] == nombre_ciudad][df['Fecha'].dt.month == int(mes)]
+    minimas = df['Temperatura Minima'].tolist()
+    maximas = df['Temperatura Maxima'].tolist()
+    return nombre_ciudad, minimas, maximas
+
+
+def mostrar_grafico(
+        ciudad: str,
+        minimas: list[float],
+        maximas: list[float]
+        ) -> None:
+    plt.plot(minimas, 'b', label='Minimas')
+    plt.title('Distribución de frutas en el almacén')
+    plt.show()
+
+
 def pedir_mes() -> str:
     return input('\nIntroduce un mes (1 - 12): ')
 
@@ -111,7 +129,10 @@ def correr_programa() -> None:
             if not validar_opcion(mes, (1, 12)):
                 mostrar_error('La opción ingresada no es válida')
             if mes >= '1' and mes <= '12':
-                break
+                # 4.
+                ciudad, minimas, maximas = procesar_datos(df, ciudad, mes)
+                mostrar_grafico(ciudad, minimas, maximas)
+                continuar()
 
 
 if __name__ == '__main__':
