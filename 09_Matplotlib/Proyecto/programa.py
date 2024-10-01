@@ -76,18 +76,6 @@ def mostrar_grafico(
     """
     Muestra un gráfico de temperaturas mínimas y máximas para una ciudad
     y mes específicos.
-
-    Parámetros:
-        ciudad (str): Nombre de la ciudad para la que se mostrará el
-            gráfico.
-        mes (str): Mes para el que se mostrará el gráfico.
-        minimas (list[float]): Lista de temperaturas mínimas para el mes
-            y ciudad seleccionados.
-        maximas (list[float]): Lista de temperaturas máximas para el mes
-            y ciudad seleccionados.
-
-    Retorna:
-        None
     """
     dias: list[int] = list(range(1, len(minimas) + 1))
 
