@@ -167,3 +167,4 @@ cython_debug/
 # Extras
 Extras/
 11_Machine_Learning_I/data/tarjetas_credito.csv
+15_Scikit_Learn/install_libs.ipynb
