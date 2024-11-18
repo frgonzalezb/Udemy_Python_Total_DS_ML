@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from skspatial.objects import Point, Line, Circle
 
 
-head: Circle = Circle(point=Point([0,  5]), radius=2)
+head: Circle = Circle(point=Point([0, 5]), radius=2)
 eye_l: Point = Point([-0.5, 5.5])
 eye_r: Point = Point([0.5, 5.5])
 mouth: Line = Line.from_points([-0.5, 4], [0.5, 4])
